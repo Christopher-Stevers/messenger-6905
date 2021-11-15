@@ -13,12 +13,12 @@ export const addMessageToStore = (state, payload) => {
 
   return state.map((convo) => {
     if (convo.id === message.conversationId) {
-      const copiedConvo={
+      const convoCopy = {
         ...convo,
         latestMessageText: message.text,
-        messages:[...convo.messages, message ]
+        messages: [...convo.messages, message]
       }
-      return copiedConvo;
+      return convoCopy;
     } else {
       return convo;
     }
