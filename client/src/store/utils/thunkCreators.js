@@ -72,13 +72,22 @@ export const logout = (id) => async (dispatch) => {
 export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
+    console.log(data);
     dispatch(gotConversations(data));
   } catch (error) {
     console.error(error);
   }
 };
 
+const setMessageAsRead=async()=>{
+  const body="body";
+  const {data}= await axios.get("/api/readmessage");
+  console.log(data);
+  return "arret"
+}
 const saveMessage = async (body) => {
+ const res= await setMessageAsRead();
+ console.log(res);
   const { data } = await axios.post("/api/messages", body);
   return data;
 };
@@ -90,12 +99,11 @@ const sendMessage = (data, body) => {
     sender: data.sender,
   });
 };
-
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
-export const postMessage = (body) => (dispatch) => {
+export const postMessage = (body) => async(dispatch) => {
   try {
-    const data = saveMessage(body);
+    const data = await saveMessage(body);
 
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));

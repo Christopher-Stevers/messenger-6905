@@ -3,17 +3,13 @@ const { Conversation, Message } = require("../../db/models");
 const onlineUsers = require("../../onlineUsers");
 
 // expects { conversationId } in body (conversationId will be null if no conversation exists yet)
-router.post("/", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
+    console.log("exec");
 
     try{
-
-        if (!req.user) {
-            return res.sendStatus(401);
-          }
-          if(!conversation){
-              next()
-
-          }
+        console.log(req);
+        console.log("hi hop");
+        res.json({hi: "hop"});
     }
     catch(err){
         next(err);
