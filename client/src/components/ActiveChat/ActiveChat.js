@@ -72,7 +72,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) =>{
   return {
     setMessageAsRead: (body) => {
-      console.log("exec")
       dispatch(setMessageAsRead(body));
     },
   };
