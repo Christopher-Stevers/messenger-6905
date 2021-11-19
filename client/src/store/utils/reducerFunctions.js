@@ -1,11 +1,12 @@
 export const addMessageToStore = (state, payload) => {
-  const { message, sender } = payload;
+  const { message, sender, fromSocket } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
   if (sender !== null) {
     const newConvo = {
       id: message.conversationId,
       otherUser: sender,
       messages: [message],
+      unreads: fromSocket ? 1 : 0,
     };
     newConvo.latestMessageText = message.text;
     return [newConvo, ...state];
@@ -16,13 +17,29 @@ export const addMessageToStore = (state, payload) => {
       return {
         ...convo,
         latestMessageText: message.text,
-        messages: [...convo.messages, message]
+        messages: [...convo.messages, message],
+        unreads: fromSocket ? convo.unreads + 1 : 0,
       };
     } else {
       return convo;
     }
   });
 };
+
+export const setReadMessagesToStore = (state, payload) => {
+  const { conversationId } = payload;
+  return state.map((convo) => {
+    if (conversationId === convo.id) {
+      return {
+        ...convo,
+        unreads: 0,
+      };
+    }
+    else {
+      return convo;
+    }
+  });
+}
 
 export const addOnlineUserToStore = (state, id) => {
   return state.map((convo) => {
