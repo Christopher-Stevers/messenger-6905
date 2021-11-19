@@ -19,7 +19,7 @@ router.get("/", async (req, res, next) => {
         },
       },
       attributes: ["id"],
-      order: [ ["updatedAt", "DESC"] ,[Message, "createdAt", "ASC"] ],
+      order: [["updatedAt", "DESC"], [Message, "createdAt", "ASC"]],
       include: [
         { model: Message, },
         {
@@ -68,7 +68,12 @@ router.get("/", async (req, res, next) => {
       }
 
       // set properties for notification count and latest message preview
-      convoJSON.latestMessageText = convoJSON.messages[convoJSON.messages.length-1].text;
+      convoJSON.latestMessageText = convoJSON.messages[convoJSON.messages.length - 1].text;
+      const reducer = (accum, elem) => {
+        if (!elem.read && elem.senderId === convoJSON.otherUser.id) return accum + 1;
+        else return accum;
+      }
+      convoJSON.unreads = convoJSON.messages.reduce(reducer, 0);
       conversations[i] = convoJSON;
     }
 
