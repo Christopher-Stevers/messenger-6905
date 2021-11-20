@@ -74,7 +74,6 @@ export const logout = (id) => async (dispatch) => {
 export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
-    console.log(data);
     dispatch(gotConversations(data));
   } catch (error) {
     console.error(error);
@@ -82,8 +81,12 @@ export const fetchConversations = () => async (dispatch) => {
 };
 
 export const setMessageAsRead = (body) => async (dispatch) => {
-  const { data } = await axios.post("/api/readmessage", body);
-  dispatch(setMessagesToRead(data));
+  try{
+  await axios.put("/api/messages", body);
+  dispatch(setMessagesToRead(body));
+  } catch (error) {
+    console.error(error);
+  }
 }
 const saveMessage = async (body) => {
   const { data } = await axios.post("/api/messages", body);
