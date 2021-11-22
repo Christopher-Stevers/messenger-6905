@@ -35,7 +35,7 @@ export const setNewMessage = (message, sender, fromSocket) => {
   };
 };
 
-export const setMessagesToRead=({ conversationId})=>{
+export const setMessageInStoreToRead=({ conversationId})=>{
   return {
     type: SET_AS_READ,
     payload: { conversationId}
