@@ -25,7 +25,8 @@ const ActiveChat = (props) => {
   const classes = useStyles();
   const { user,  setMessageAsRead } = props;
   const conversation = props.conversation||{};
-  const {id, otherUser, unreads}=conversation;
+  const {id, otherUser, unreads, lastUnread}=conversation;
+  const lastReadId = lastUnread ? lastUnread.id-1: -1;
   
   useEffect(()=>{
 if (id&&unreads){
@@ -43,6 +44,7 @@ if (id&&unreads){
           <Box className={classes.chatContainer}>
             <Messages
               messages={conversation.messages}
+              lastReadId={lastReadId}
               otherUser={conversation.otherUser}
               userId={user.id}
             />
@@ -51,6 +53,7 @@ if (id&&unreads){
               conversationId={conversation.id}
               user={user}
             />
+            {lastReadId}
           </Box>
         </>
       )}
