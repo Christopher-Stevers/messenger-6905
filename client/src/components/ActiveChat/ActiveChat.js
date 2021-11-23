@@ -25,8 +25,8 @@ const ActiveChat = (props) => {
   const classes = useStyles();
   const { user, setMessageAsRead } = props;
   const conversation = props.conversation || {};
-  const { id, otherUser, unreads, lastIndexRead, messages} = conversation;
-    useEffect(() => {
+  const { id, otherUser, unreads, lastIndexRead, messages } = conversation;
+  useEffect(() => {
     if (id && unreads) {
       setMessageAsRead({ conversationId: id, senderId: otherUser.id })
     }

@@ -18,7 +18,7 @@ export const addMessageToStore = (state, payload) => {
         ...convo,
         latestMessageText: message.text,
         messages: [...convo.messages, message],
-        unreads: fromSocket ? convo.unreads + 1 : 0,
+        unreads: fromSocket ? convo.unreads? convo.unreads + 1 : 1 : 0,
       };
     } else {
       return convo;
