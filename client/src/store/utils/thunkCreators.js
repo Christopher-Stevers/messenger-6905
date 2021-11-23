@@ -81,9 +81,13 @@ export const fetchConversations = () => async (dispatch) => {
 };
 
 export const setMessageAsRead = (body) => async (dispatch) => {
-  try{
-  await axios.put("/api/messages", body);
-  dispatch(setMessageInStoreToRead(body));
+  try {
+    await axios.put("/api/messages", body);
+    dispatch(setMessageInStoreToRead(body));
+    socket.emit("read", {
+      senderId: body.senderId,
+      conversationId: body.conversationId,
+    });
   } catch (error) {
     console.error(error);
   }

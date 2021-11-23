@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
 import { Input, Header, Messages } from "./index";
 import { connect } from "react-redux";
-import {setMessageAsRead} from "../../store/utils/thunkCreators"
+import { setMessageAsRead } from "../../store/utils/thunkCreators"
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -23,16 +23,14 @@ const useStyles = makeStyles(() => ({
 
 const ActiveChat = (props) => {
   const classes = useStyles();
-  const { user,  setMessageAsRead } = props;
-  const conversation = props.conversation||{};
-  const {id, otherUser, unreads, lastUnread}=conversation;
-  const lastReadId = lastUnread ? lastUnread.id-1: -1;
-  
-  useEffect(()=>{
-if (id&&unreads){
- setMessageAsRead({ conversationId: id, senderId: otherUser.id})
-}
-  },[unreads, id, setMessageAsRead, otherUser ])
+  const { user, setMessageAsRead } = props;
+  const conversation = props.conversation || {};
+  const { id, otherUser, unreads, lastIndexRead, messages} = conversation;
+    useEffect(() => {
+    if (id && unreads) {
+      setMessageAsRead({ conversationId: id, senderId: otherUser.id })
+    }
+  }, [unreads, id, setMessageAsRead, otherUser, messages])
   return (
     <Box className={classes.root}>
       {conversation.otherUser && (
@@ -44,7 +42,7 @@ if (id&&unreads){
           <Box className={classes.chatContainer}>
             <Messages
               messages={conversation.messages}
-              lastReadId={lastReadId}
+              lastIndexRead={lastIndexRead}
               otherUser={conversation.otherUser}
               userId={user.id}
             />
@@ -53,7 +51,6 @@ if (id&&unreads){
               conversationId={conversation.id}
               user={user}
             />
-            {lastReadId}
           </Box>
         </>
       )}
@@ -63,16 +60,17 @@ if (id&&unreads){
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user,    
+    user: state.user,
     conversation: state.conversations && state.conversations.find(
-      (conversation) =>{
-        return conversation.otherUser.username === state.activeConversation} 
+      (conversation) => {
+        return conversation.otherUser.username === state.activeConversation
+      }
     ),
     activeConversation: state.activeConversation,
-    
+
   };
 };
-const mapDispatchToProps = (dispatch) =>{
+const mapDispatchToProps = (dispatch) => {
   return {
     setMessageAsRead: (body) => {
       dispatch(setMessageAsRead(body));

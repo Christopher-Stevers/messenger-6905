@@ -41,6 +41,22 @@ export const setReadMessagesToStore = (state, payload) => {
   });
 }
 
+export const setOtherUserMessagesToRead = (state, payload) => {
+  const { conversationId } = payload;
+  return state.map((convo) => {
+    if (conversationId === convo.id) {
+      return {
+        ...convo,
+        lastIndexRead: convo.messages ? convo.messages[convo.messages.length - 1].id : convo.lastIndexRead,
+      };
+    }
+    else {
+      return convo;
+    }
+  });
+
+
+}
 export const addOnlineUserToStore = (state, id) => {
   return state.map((convo) => {
     if (convo.otherUser.id === id) {
