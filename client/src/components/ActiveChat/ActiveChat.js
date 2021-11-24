@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
 import { Input, Header, Messages } from "./index";
 import { connect } from "react-redux";
+import { setMessageAsRead } from "../../store/utils/thunkCreators"
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -22,9 +23,14 @@ const useStyles = makeStyles(() => ({
 
 const ActiveChat = (props) => {
   const classes = useStyles();
-  const { user } = props;
+  const { user, setMessageAsRead } = props;
   const conversation = props.conversation || {};
-
+  const { id, otherUser, unreads, lastIndexRead, messages } = conversation;
+  useEffect(() => {
+    if (id && unreads) {
+      setMessageAsRead({ conversationId: id, senderId: otherUser.id })
+    }
+  }, [unreads, id, setMessageAsRead, otherUser, messages])
   return (
     <Box className={classes.root}>
       {conversation.otherUser && (
@@ -36,6 +42,7 @@ const ActiveChat = (props) => {
           <Box className={classes.chatContainer}>
             <Messages
               messages={conversation.messages}
+              lastIndexRead={lastIndexRead}
               otherUser={conversation.otherUser}
               userId={user.id}
             />
@@ -53,12 +60,22 @@ const ActiveChat = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user,    
+    user: state.user,
     conversation: state.conversations && state.conversations.find(
-      (conversation) =>{
-        return conversation.otherUser.username === state.activeConversation} 
-    )
+      (conversation) => {
+        return conversation.otherUser.username === state.activeConversation
+      }
+    ),
+    activeConversation: state.activeConversation,
+
   };
 };
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setMessageAsRead: (body) => {
+      dispatch(setMessageAsRead(body));
+    },
+  };
+}
 
-export default connect(mapStateToProps, null)(ActiveChat);
+export default connect(mapStateToProps, mapDispatchToProps)(ActiveChat);

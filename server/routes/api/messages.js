@@ -43,4 +43,29 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+router.put("/", async (req, res, next) => {
+  const { senderId, conversationId } = req.body;  
+  if (!req.user) {
+    return res.sendStatus(401);
+  }
+  if (!req.user.id === senderId) {
+    return res.sendStatus(403);
+  }
+  try {
+    if (conversationId && senderId) {
+      const result = await Message.update({ read: true }, {
+        where: {
+          senderId: senderId,
+          conversationId,
+          read: false,
+        }
+      })
+    }
+    res.sendStatus(204);
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
